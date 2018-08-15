@@ -1,0 +1,36 @@
+- name: configuring hosts files
+  template:
+    src: hosts.j2
+    dest: /etc/hosts
+  become: yes
+
+- name: yum update
+  yum:
+    name: "*"
+    state: latest
+    update_cache: yes
+  become: yes
+
+- name: install EPEL repository
+  yum:
+    name: https://dl.fedoraproject.org/pub/epel/epel-release-latest-7.noarch.rpm
+    state: present
+    update_cache: yes
+  become: yes
+
+- name: install tools
+  yum:
+    name: '{{ item.name }}'
+    state: present
+    update_cache: yes
+  with_items: '{{ tools_packages }}'
+  become: yes
+
+- name: Ensure Ansible Facts Dir exists
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+    recurse: yes
+  become: yes
+
+

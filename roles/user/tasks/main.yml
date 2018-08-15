@@ -1,0 +1,40 @@
+- name: Ensure group exists
+  group:
+    name: "{{ main_group   | mandatory}}"
+    gid: "{{ main_group_id | default(omit)}}"
+    state: present
+  become: yes
+
+- name: Ensure user exists
+  user:
+    name: "{{ user_name     | mandatory }}"
+    uid: "{{ user_id        | default(omit) }}"
+    group: "{{ main_group   | mandatory }}"
+    groups: "{{ user_groups | default(omit) }}"
+    home: "{{ user_home     | default(omit) }}"
+   become: yes
+
+- name: Add user in sudoers
+  template:
+   src: sudoers.j2
+   dest: /etc/sudoers.d/{{ user_name }}
+   validate: 'visudo -cf %s'
+   mode: 0440
+  become: yes
+  #when: (sudoers == false)
+
+- name: Set authorized key in alternate location
+  authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ item }}"
+  with_file: "{{ authorized_keys }}"
+  become: yes
+
+- name: Collecting fact
+  template:
+    src: user_fact.j2
+    dest: "/etc/ansible/facts.d/user.fact"
+  become: yes
+ 
+    
+ 

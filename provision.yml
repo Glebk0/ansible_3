@@ -1,0 +1,7 @@
+hosts: all
+pre_tasks:
+- name: Checking fact folder existence
+  file:
+    path: /etc/ansible/facts.d
+    state: directory
+  become: yes

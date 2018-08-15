@@ -1,0 +1,10 @@
+---
+# defaults are for refference
+user_group: user
+user_name: user
+#group_id: 1100
+#user_id: 1200
+main_group: user
+#user_groups: ["user, secondary"]
+#user_home: "/home/{{ user_name }}/"
+
