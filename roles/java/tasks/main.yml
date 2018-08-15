@@ -4,4 +4,14 @@
   local_action: stat path={{ java_archive }}/java-{{ java_version}}.tar.gz
   register: java_existance
 
-- namegit
+- block:
+  - name: Creating JAVA_HOME
+    file:
+      path: "{{ java_dir }}{{ java_version }}"
+      state: directory
+    become: yes
+
+  - name: Copying needed tar.gz
+    unarchive:
+      src: java-{{ java_version }}
+      dest:

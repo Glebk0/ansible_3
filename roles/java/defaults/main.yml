@@ -1,2 +1,5 @@
 ---
 # defaults file for java
+JAVA_HOME: {{ java_dir }}{{ java_version }}/
+java_dir: /opt/oracle/java
+java_version: "1.8.0_181"
