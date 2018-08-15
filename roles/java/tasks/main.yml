@@ -1,2 +1,7 @@
 ---
 # tasks file for java
+- name: Checking local storage for java version
+  local_action: stat path={{ java_archive }}/java-{{ java_version}}.tar.gz
+  register: java_existance
+
+- namegit

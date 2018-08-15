@@ -1,0 +1,12 @@
+[Unit]
+Description=Jenkins Daemon
+
+[Service]
+Type=forking
+ExecStart=/usr/bin/java {{ JAVA_OPTS }} -jar {{ jenkins_home }}jenkins.war --daemon
+User={{ jenkins_user }}
+Restart=always
+RestartSec=20
+
+[Install]
+WantedBy=multi-user.target

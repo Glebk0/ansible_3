@@ -1,2 +1,10 @@
 ---
-# handlers file for roles/jenkins
+# handlers file for jenkins
+- name: Reloading Jenkins service
+  systemd:
+    name: jenkins
+    daemon-reload: yes
+    state: restarted
+    enabled: yes
+  become: yes
+  listen: "Reload service"

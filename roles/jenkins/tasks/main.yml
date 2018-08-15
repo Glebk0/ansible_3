@@ -1,2 +1,48 @@
 ---
 # tasks file for roles/jenkins
+- name: Creating jenkins user
+  user:
+   name: "{{ jenkins_user }}"
+   home: "{{ jenkins_home }}"
+   state: present
+
+- name: Downloading jenkins
+  get_url:
+    url: "{{ jenkins_download_url }}"
+    dest: "{{ jenkins_home }}jenkins.war"
+
+- name: Creating jenkins service
+  template:
+    src: jenkins.service.j2
+    dest: /etc/systemd/system/jenkins.service
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  notify: Reload service
+
+- name: Starting jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Waiting for jenkins to boot
+  wait_for:
+    port: 8080
+    delay: 50
+
+- name: Checking jenkins
+  shell: |
+    systemctl is-active jenkins
+  register: jenkins_status
+  changed_when: no
+- debug: msg="{{ jenkins_status.stdout_lines}}"
+
+- name: Getting jenkins init password
+  shell: cat {{ jenkins_home }}secrets/initialAdminPassword
+  changed_when: no
+  become: yes
+  register: init_password
+- debug: msg="Initial jenkins password {{init_password.stdout}}"

@@ -1,2 +1,7 @@
 ---
 # defaults file for roles/jenkins
+jenkins_user: jenkins
+jenkins_version: 2.99
+jenkins_download_url: "http://mirrors.jenkins.io/war/{{ jenkins_version }}/jenkins.war"
+jenkins_home: /opt/jenkins/
+JAVA_OPTS: "-Djava.awt.headless=true -DJENKINS_HOME={{ jenkins_home }}"
