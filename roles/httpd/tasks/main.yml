@@ -1,0 +1,44 @@
+---
+# tasks file for httpd
+
+- name: ensuring httpd exists and latest version
+  yum:
+    name: httpd
+    state: latest
+  become: yes
+
+- name: configuring httpd
+  template:
+    src: templates/vhost.conf.j2
+    dest: /etc/httpd/conf.d/jenkins.conf
+  become: yes
+  notify:
+    - restart httpd
+
+- name: enabling httpd service
+  systemd:
+    name: httpd
+    state: started
+    enabled: yes
+  become: yes
+
+- name: checking installation results
+  shell: |
+    httpd -version
+    systemctl is-active httpd
+  register: httpd_status
+  changed_when: no
+
+- name: Get version
+  shell: /usr/sbin/httpd -v 2>&1|grep "Server version"|awk '{print $3}'
+  register: httpd_version
+  changed_when: no
+
+- name: Saving facts
+  become: yes
+  copy:
+    content:
+      {
+        "version": "{{ httpd_version.stdout }}"
+      }
+    dest: /etc/ansible/facts.d/httpd.fact

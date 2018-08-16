@@ -1,17 +1,6 @@
----
-# tasks file for java
-- name: Checking local storage for java version
-  local_action: stat path={{ java_archive }}/java-{{ java_version}}.tar.gz
-  register: java_existance
+- name: loading local facts
+  setup:
+    filter: ansible_local
 
-- block:
-  - name: Creating JAVA_HOME
-    file:
-      path: "{{ java_dir }}{{ java_version }}"
-      state: directory
-    become: yes
-
-  - name: Copying needed tar.gz
-    unarchive:
-      src: java-{{ java_version }}
-      dest:
+- include_tasks: java_install.yml
+  when: ansible_local.java is not defined or ansible_local.java.java_version != java_version

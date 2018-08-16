@@ -12,7 +12,7 @@
     group: "{{ main_group   | mandatory }}"
     groups: "{{ user_groups | default(omit) }}"
     home: "{{ user_home     | default(omit) }}"
-   become: yes
+  become: yes
 
 - name: Add user in sudoers
   template:
@@ -23,12 +23,12 @@
   become: yes
   #when: (sudoers == false)
 
-- name: Set authorized key in alternate location
-  authorized_key:
-    user: "{{ user_name }}"
-    key: "{{ item }}"
-  with_file: "{{ authorized_keys }}"
-  become: yes
+#- name: Set authorized key in alternate location
+#  authorized_key:
+#    user: "{{ user_name }}"
+#    key: "{{ item }}"
+#  with_file: "{{ authorized_keys }}"
+#  become: yes
 
 - name: Collecting fact
   template:

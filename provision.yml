@@ -1,7 +1,30 @@
-hosts: all
-pre_tasks:
-- name: Checking fact folder existence
-  file:
-    path: /etc/ansible/facts.d
-    state: directory
+
+
+- hosts: all
+  pre_tasks:
+  - name: Checking fact folder existence
+    file:
+      path: /etc/ansible/facts.d
+      state: directory
+    become: yes
+
+- hosts: local
   become: yes
+  vars:
+    user_name: devops
+  roles:
+    - ssh_key
+
+- hosts: appserver
+  become: yes
+  roles:
+    - common
+    - user
+    - jenkins
+
+- hosts: webserver
+  become: yes
+  roles:
+    - common
+    - user
+    - httpd

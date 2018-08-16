@@ -1,20 +1,18 @@
 { "User" : "{{ user_name }}",
   {% if user_id is defined %}
-    "User ID": "{{ user_id }}",
+  "User ID": "{{ user_id }}",
   {% else %}
-    "User ID": "not defined in playbook"
+  "User ID": "not defined in playbook",
   {% endif %}
   "User main group": "{{ main_group }}",
   {% if user_groups is defined %}
-    "User groups list": "{{ user_groups }}",
+  "User groups list": "{{ user_groups }}",
   {% else %}
-    "User groups list": "not defined in playbook"
+  "User groups list": "not defined in playbook",
   {% endif %}
   {% if user_home is defined %}
-    "User home dir": "{{ user_home }}",
+  "User home dir": "{{ user_home }}",
   {% else %}
-    "User home dir": "/home/{{ user_name }}/"
+  "User home dir": "/home/{{ user_name }}/"
   {% endif %}
-
-  SUDOERS NEEDED HERE
 }

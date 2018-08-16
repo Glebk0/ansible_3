@@ -6,7 +6,7 @@ Type=forking
 ExecStart=/usr/bin/java {{ JAVA_OPTS }} -jar {{ jenkins_home }}jenkins.war --daemon
 User={{ jenkins_user }}
 Restart=always
-RestartSec=20
+RestartSec=60
 
 [Install]
 WantedBy=multi-user.target

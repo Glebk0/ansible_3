@@ -1,2 +1,7 @@
 ---
 # vars file for java
+java_jdk_version:
+  '1.8.0_181':
+    directory: jdk1.8.0_181
+  '10.0.2':
+    directory: jdk-10.0.2

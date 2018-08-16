@@ -1,0 +1,81 @@
+---
+# tasks file for roles/jenkins
+- name: Saving old configuration fact
+  shell: mv -f /etc/ansible/facts.d/jenkins.fact /etc/ansible/facts.d/jenkins_old.fact
+  ignore_errors: yes
+  become: yes
+
+- name: Creating jenkins user
+  user:
+   name: "{{ jenkins_user }}"
+   home: "{{ jenkins_home }}"
+   state: present
+  become: yes
+
+- name: Downloading jenkins
+  get_url:
+    url: "{{ jenkins_download_url }}"
+    dest: "{{ jenkins_home }}jenkins.war"
+
+- name: Creating jenkins service
+  template:
+    src: jenkins.service.j2
+    dest: /etc/systemd/system/jenkins.service
+    owner: root
+    group: root
+    mode: 0644
+  become: yes
+  notify: Reload service
+
+- name: Starting jenkins service
+  systemd:
+    name: jenkins
+    state: started
+    enabled: yes
+  become: yes
+
+- name: Waiting for jenkins to boot
+  wait_for:
+    port: 8080
+    delay: 30
+
+- name: Jenkins check running
+  shell: ' ps -eo cmd | grep -v grep | grep "jenkins" '
+  args:
+    warn: false
+
+- name: Check jenkins app response code
+  shell: curl -s -o /dev/null -w "%{http_code}" http://192.168.1.71:8080/login?from=%2F | grep 200
+  args:
+    warn: false
+
+- name: Wait until init password is present
+  wait_for:
+    path: "{{ jenkins_home }}secrets/initialAdminPassword"
+  become: yes
+
+- name: Checking jenkins
+  shell: "systemctl status jenkins | grep 'Active:' | sed 's/Active: //'"
+  register: jenkins_status
+  changed_when: no
+
+- name: Getting jenkins init password
+  shell: " cat {{ jenkins_home }}secrets/initialAdminPassword "
+  changed_when: no
+  become: yes
+  register: init_password
+- debug: msg="Initial jenkins password {{init_password.stdout}}"
+
+- name: Get facts about jenkins version
+  shell: "java -jar {{ jenkins_home }}jenkins.war --version "
+  become: yes
+  register: jenkins_version_out
+  changed_when: False
+
+- name: Collecting fact
+  vars:
+    jenkins_configured: yes
+  template:
+    src: jenkins_fact.j2
+    dest: /etc/ansible/facts.d/jenkins.fact
+  become: yes

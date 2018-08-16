@@ -18,4 +18,5 @@
       {
        "Key generated for user": "{{ user_name }}"
       }
-    dest: /etc/ansible/facts.d
+    dest: /etc/ansible/facts.d/ssh.fact
+  become: yes

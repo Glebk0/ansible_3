@@ -1,0 +1,11 @@
+listen {{ httpd_listen_port }}
+<VirtualHost {{ httpd_listen_ip }}:{{ httpd_listen_port }}>
+    ProxyPass         /  {{ proxy_url }} nocanon
+    ProxyPassReverse  /  {{ proxy_url }}
+    ProxyRequests     Off
+    AllowEncodedSlashes NoDecode
+    <Proxy {{ proxy_url }}*>
+      Order deny,allow
+      Allow from all
+    </Proxy>
+</VirtualHost>

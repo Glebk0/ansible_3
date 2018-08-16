@@ -1,0 +1,36 @@
+---
+# tasks file for java
+- name: Checking local storage for java version
+  local_action: stat path=java-{{ java_version}}.tar.gz
+  register: java_existance
+
+- name: Creating JAVA_HOME
+  file:
+    path: "{{ java_dir }}{{ java_version }}"
+    state: directory
+  become: yes
+
+- name: Copying needed tar.gz
+  unarchive:
+    src: java-{{ java_version }}.tar.gz
+    dest: "{{ JAVA_HOME }}"
+
+- name: Add Java to alternatives
+  alternatives:
+    name: "{{ item }}"
+    path: "{{ JAVA_HOME }}/{{ java_jdk_version[java_version].directory}}/bin/{{ item }}"
+    link: /usr/bin/{{ item }}
+  with_items:
+    - java
+    - jar
+    - javac
+
+- name: Verify java installation
+  shell: "java -version 2>&1 | grep {{ java_version }}"
+  changed_when: no
+
+- name: Collecting fact
+  template:
+    src: java_fact.j2
+    dest: "/etc/ansible/facts.d/java.fact"
+  become: yes

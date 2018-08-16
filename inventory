@@ -1,0 +1,19 @@
+local ansible_connection=local
+
+[nodes:children]
+webservers
+appservers
+
+[webservers]
+webserver ansible_host=192.168.1.70 ansible_ssh_private_key_file=.vagrant/machines/webserver/virtualbox/private_key
+
+
+[appservers]
+appserver ansible_host=192.168.1.71 ansible_ssh_private_key_file=.vagrant/machines/appserver/virtualbox/private_key
+
+
+[all:vars]
+ansible_connection=ssh
+
+[nodes:vars]
+ansible_user=vagrant

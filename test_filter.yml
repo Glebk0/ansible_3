@@ -1,0 +1,40 @@
+- hosts: localhost
+  vars:
+    accounts:
+    - { name: Identity,  id: 818440412345 }
+    - { name: Devops,    id: 794873312345 }
+    - { name: WCA,       id: 544564512345 }
+    - { name: API,       id: 394936412345 }
+
+  tasks:
+  - name: Using "json_query"
+    debug:
+      msg={{ accounts|json_query("[?name=='Identity'].id")|join('') }}
+
+  - name: Using "selectattr" and "map"
+    debug:
+      msg={{ accounts|selectattr('name','equalto','Identity')|map(attribute='id')|join('') }}
+
+  - name: Using "json_query" and query var
+    debug:
+      msg={{ accounts | json_query(query) | join('') }}
+    vars:
+      query: "[?name=='Identity'].id"
+
+  tasks:
+  - debug: msg="identity_id is {{ accounts | find }}"
+
+- hosts: localhost
+  vars:
+    accounts:
+    - { name: Identity,  id: 818440412345 }
+    - { name: Devops,    id: 794873312345 }
+    - { name: WCA,       id: 544564512345 }
+    - { name: API,       id: 394936412345 }
+
+    identity_id: "{{ accounts|json_query(\"[?name=='Identity'].id\")|join('') }}"
+
+  tasks:
+  - name: You can use this in a variable
+    debug: var=identity_id
+
