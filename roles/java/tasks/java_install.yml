@@ -1,8 +1,12 @@
----
-# tasks file for java
 - name: Checking local storage for java version
   local_action: stat path=java-{{ java_version}}.tar.gz
   register: java_existance
+  ignore_errors: True
+
+- name: Fail if nothing found
+  fail:
+    msg: "java version distribution hasn’t been found"
+  when: java_existance.stat.exists == false
 
 - name: Creating JAVA_HOME
   file:
@@ -14,6 +18,7 @@
   unarchive:
     src: java-{{ java_version }}.tar.gz
     dest: "{{ JAVA_HOME }}"
+  become: yes
 
 - name: Add Java to alternatives
   alternatives:
@@ -24,6 +29,7 @@
     - java
     - jar
     - javac
+  become: yes
 
 - name: Verify java installation
   shell: "java -version 2>&1 | grep {{ java_version }}"

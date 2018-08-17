@@ -16,6 +16,7 @@
   get_url:
     url: "{{ jenkins_download_url }}"
     dest: "{{ jenkins_home }}jenkins.war"
+  become: yes
 
 - name: Creating jenkins service
   template:
@@ -45,7 +46,7 @@
     warn: false
 
 - name: Check jenkins app response code
-  shell: curl -s -o /dev/null -w "%{http_code}" http://192.168.1.71:8080/login?from=%2F | grep 200
+  shell: curl -s -o /dev/null -w "%{http_code}" http://localhost:8080/login?from=%2F | grep 200
   args:
     warn: false
 

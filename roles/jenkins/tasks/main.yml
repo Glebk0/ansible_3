@@ -3,4 +3,4 @@
     filter: ansible_local
 
 - include_tasks: jenkins_configuration.yml
-  when: ansible_local.jenkins is not defined or ansible_local.jenkins.jenkins_configured != 'True'
+#  when: ansible_local.jenkins is not defined or ansible_local.jenkins.jenkins_configured != 'True'

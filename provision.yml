@@ -13,18 +13,29 @@
   vars:
     user_name: devops
   roles:
-    - ssh_key
+#    - ssh_key
 
 - hosts: appserver
   become: yes
   roles:
-    - common
-    - user
-    - jenkins
+#    - common
+#    - user
+#    - jenkins
 
 - hosts: webserver
   become: yes
   roles:
-    - common
-    - user
-    - httpd
+#    - common
+#    - user
+#    - httpd
+
+- hosts: appserver
+  post_tasks:
+  - name: custom
+    checker:
+      process: jenkins
+    become: yes
+    register: output
+
+  - debug:
+      var: output

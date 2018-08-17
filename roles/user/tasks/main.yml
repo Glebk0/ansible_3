@@ -21,14 +21,13 @@
    validate: 'visudo -cf %s'
    mode: 0440
   become: yes
-  #when: (sudoers == false)
 
-#- name: Set authorized key in alternate location
-#  authorized_key:
-#    user: "{{ user_name }}"
-#    key: "{{ item }}"
-#  with_file: "{{ authorized_keys }}"
-#  become: yes
+- name: Set authorized key in alternate location
+  authorized_key:
+    user: "{{ user_name }}"
+    key: "{{ item }}"
+  with_file: "{{ authorized_keys }}"
+  become: yes
 
 - name: Collecting fact
   template:
